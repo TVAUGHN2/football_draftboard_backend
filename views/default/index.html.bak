@@ -1,0 +1,96 @@
+{{include 'web2py_ajax.html'}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Football Draftboard</title>
+  <base href="/fantasy_football/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+  <link rel="icon" type="image/x-icon" href="{{=URL('static','football.png')}}">
+  <link rel="stylesheet" href="{{=URL('static','forms.css')}}">
+  <link href= "{{=URL('views','web2py_ajax.html')}}">
+  <link href="{{=URL('static','styles.d41d8cd98f00b204e980.bundle.css')}}" rel="stylesheet"/>
+  <link href="{{=URL('static','index.html')}}"/>
+  {{=A('Logout', _href=URL('default', 'user', args='logout', scheme="https"))}}
+
+</head>
+<body>
+    <app-root>Loading...</app-root>
+        <!-- pass_login file is used to pass the token from Python server side to Javascript client side
+             Works since both files are served in same location, otherwise would need another solution
+        -->
+        <script type="text/javascript">
+            //used on front-end to get name from server 
+            function passName(){
+                return ('{{=auth.user.first_name}}')
+            }
+            
+            //used on the front-end to get email from server
+            function passEmail(){
+                return ('{{=auth.user.email}}')
+            }
+            //used on front-end to logout on server (currently not working)
+            function server_logout(){
+                $(document).ready(function () {
+                     jQuery.get('{{=URL('default', 'logout')}}', {}, function(data) {
+                                console.log("Success: ")
+                                console.log(data);
+                            })
+                });
+            }
+            //used in front end to save data to db
+            function save(mydata, type){
+                console.log("mydata");
+                console.log(mydata);
+                console.log("type: " + type);
+                $(document).ready(function () {
+                     jQuery.post('{{=URL('default', 'save_to_db')}}', {value: mydata, requestType: type}, function(data) {
+                                console.log("Success: ");
+                                console.log(data)
+                            });
+                });
+            }
+            //used in front end to get data from database
+            function getData(type){
+                console.log("type: " + type);
+                 $(document).ready(function (){
+                      jQuery.get('{{=URL('default', 'get_data')}}', {requestType: type}, function(data) {
+                        console.log("Success: ");
+                            console.log(jQuery.text(jQuery.parseHTML(data)[0]));
+                            return jQuery.text(jQuery.parseHTML(data)[0]);
+                  })});
+                console.log("done in get data")
+            }
+        </script>
+
+
+        <script type="text/javascript" src="{{=URL('static', 'inline.8844083f1439afa08da1.bundle.js')}}"></script>
+        <script type="text/javascript" src="{{=URL('static', 'polyfills.ed762e38550b1ba74505.bundle.js')}}"></script>
+        <script type="text/javascript" src="{{=URL('static', 'vendor.44ac7e864ea905f8c17e.bundle.js')}}"></script>
+        <script type="text/javascript" src="{{=URL('static', 'main.6ae60aca475ece77b03d.bundle.js')}}"></script>
+ 
+    <!-- Don't load main static file until finish loading other files so that global passLogin() function can be instantiated
+       <script type="text/javascript">
+            function downloadJSAtOnload() {
+                var element = document.createElement("script");
+                //var element2 = document.createElement("script");
+               // var element3 = document.createElement("script");
+                var element4 = document.createElement("script");
+                //var element5 = document.createElement("stylesheet");
+                element.src = "static/main.0489ab0816e6640621c9.bundle.js";
+                //element2.src = "static/inline.226b289ae97bd03091ce.bundle.js";
+                //element3.src = "static/polyfills.ed762e38550b1ba74505.bundle.js";
+                element4.src = "static/vendor.44ac7e864ea905f8c17e.bundle.js";
+                //element5.src = "static/styles.d41d8cd98f00b204e980.bundle.css";
+                document.body.appendChild(element);
+            }
+            if (window.addEventListener)
+            window.addEventListener("load", downloadJSAtOnload, false);
+            else if (window.attachEvent)
+            window.attachEvent("onload", downloadJSAtOnload);
+            else window.onload = downloadJSAtOnload;
+        </script>-->
+
+</body>
+</html>
